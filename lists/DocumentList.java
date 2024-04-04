@@ -1,7 +1,6 @@
 package lists;
 
 import interfaces.ReadAndWriteFile;
-import model.Claim;
 import model.Document;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -13,8 +12,6 @@ import java.util.Scanner;
 
 public class DocumentList implements ReadAndWriteFile {
     private ArrayList<Document> documents;
-    private ClaimList claimList;
-
     public DocumentList() {
         this.documents = new ArrayList<>();
     }

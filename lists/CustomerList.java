@@ -91,7 +91,6 @@ public class CustomerList implements ReadAndWriteFile {
         for (Customer customer : this.customers) {
             if (customer.getId().equalsIgnoreCase(customerId)) {
                 customers.remove(customer);
-                customer.setInsuranceCard(null);
                 return true;
             }
         }
@@ -156,12 +155,10 @@ public class CustomerList implements ReadAndWriteFile {
 
     public void printMenuCustomer(){
         System.out.println("====================CUSTOMER MENU====================");
-        System.out.println("1. ADD NEW CUSTOMER");
-        System.out.println("2. DELETE CUSTOMER BY ID");
-        System.out.println("3. GET CUSTOMER BY ID");
-        System.out.println("4. GET ALL CUSTOMERS");
-        System.out.println("5. UPDATE CUSTOMER BY ID");
-        System.out.println("6. GET DEPENDENT LIST OF A POLICY HOLDER BY ID");
+        System.out.println("1. GET CUSTOMER BY ID");
+        System.out.println("2. GET ALL CUSTOMERS");
+        System.out.println("3. UPDATE CUSTOMER BY ID");
+        System.out.println("4. GET DEPENDENT LIST OF A POLICY HOLDER BY ID");
         System.out.println("0. EXIT CUSTOMER MENU");
     }
 
@@ -181,19 +178,6 @@ public class CustomerList implements ReadAndWriteFile {
 
             switch (number) {
                 case 1 -> {
-                    Customer newCustomer = addNewCustomer();
-                    addCustomerToList(newCustomer);
-                }
-                case 2 -> {
-                    System.out.print("Enter Customer ID to delete: ");
-                    String customerIdToDelete = scanner.nextLine();
-                    if (deleteCustomerById(customerIdToDelete)) {
-                        System.out.println("Customer deleted successfully.");
-                    } else {
-                        System.out.println("Customer with ID " + customerIdToDelete + " not found.");
-                    }
-                }
-                case 3 -> {
                     System.out.print("Enter Customer ID to get: ");
                     String customerIdToGet = scanner.nextLine();
                     Customer foundCustomer = findCustomerById(customerIdToGet);
@@ -203,11 +187,11 @@ public class CustomerList implements ReadAndWriteFile {
                         System.out.println("Customer with ID " + customerIdToGet + " not found.");
                     }
                 }
-                case 4 -> {
+                case 2 -> {
                     System.out.println("All Customers:");
                     getAllCustomers();
                 }
-                case 5 -> {
+                case 3 -> {
                     System.out.print("Enter Customer ID to update: ");
                     String customerIdToUpdate = scanner.nextLine();
                     if (updateCustomerById(customerIdToUpdate)) {
@@ -216,7 +200,7 @@ public class CustomerList implements ReadAndWriteFile {
                         System.out.println("Customer with ID " + customerIdToUpdate + " not found.");
                     }
                 }
-                case 6 -> {
+                case 4 -> {
                     System.out.print("Enter Policy Holder ID to search: ");
                     String pHolderId = scanner.nextLine();
                     PolicyHolder foundPolicyHolder = null;

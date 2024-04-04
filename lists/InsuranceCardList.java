@@ -42,35 +42,33 @@ public class InsuranceCardList implements ReadAndWriteFile {
         return null;
     }
 
-    public void addNewInsuranceCard() {
+    public InsuranceCard addNewInsuranceCard() {
         Scanner scanner = new Scanner(System.in);
         boolean success = false;
 
         do {
-            System.out.print("Enter Customer ID: ");
-            String customerId = scanner.nextLine();
-            Customer customer = customerList.findCustomerById(customerId);
+//            System.out.print("Enter Customer ID: ");
+//            String customerId = scanner.nextLine();
+//            Customer customer = customerList.findCustomerById(customerId);
+//
+//            if (customer == null || customer.getInsuranceCard() != null) {
+//                System.out.println("Invalid Customer ID or Customer already has an Insurance Card.");
+//                continue;
+//            }
 
-            if (customer == null || customer.getInsuranceCard() != null) {
-                System.out.println("The Customer has the Insurance Card OR check the valid customer ID");
-                continue;
-            }
-
-            boolean cardExists;
+            Customer customer = customerList.addNewCustomer();
+            customerList.addCustomerToList(customer);
             String cardNumber;
             do {
-                cardExists = false;
                 System.out.print("Enter Card Number: ");
                 cardNumber = scanner.nextLine();
 
-                for (InsuranceCard card : insuranceCards) {
-                    if (card.getCardNumber().equalsIgnoreCase(cardNumber)) {
-                        cardExists = true;
-                        System.out.println("Card already exists. Please enter a different card number.");
-                        break;
-                    }
+                if (isCardNumberExists(cardNumber)) {
+                    System.out.println("Card already exists. Please enter a different card number.");
+                } else {
+                    break;
                 }
-            } while (cardExists);
+            } while (true);
 
             System.out.print("Enter Formatted Expiration Date (DD/MM/YYYY): ");
             String formattedExpirationDate = scanner.nextLine();
@@ -81,49 +79,61 @@ public class InsuranceCardList implements ReadAndWriteFile {
             newInsuranceCard.setCustomer(customer);
             customer.setInsuranceCard(newInsuranceCard);
 
-            String cardHolderId;
-            PolicyHolder policyHolder = null;
-            do {
-                System.out.print("Enter the Card Holder ID: ");
-                cardHolderId = scanner.nextLine();
-                Customer cardHolder = customerList.findCustomerById(cardHolderId);
+            PolicyHolder policyHolder = selectPolicyHolder(customerList, scanner);
 
-                if (!(cardHolder instanceof PolicyHolder)) {
-                    System.out.println("Invalid ID. The customer is not a Policy Holder. Please enter a valid Policy Holder ID.");
-                    continue;
-                }
-
-                policyHolder = (PolicyHolder) cardHolder;
-
-                if (policyHolder == null) {
-                    System.out.println("Policy Holder not found. Please enter a valid ID.");
-                }
-            } while (policyHolder == null);
-
-            if(customer instanceof Dependent){
+            if (customer instanceof Dependent) {
                 newInsuranceCard.setCardHolder(policyHolder);
-                newInsuranceCard.getCardHolder().getObjDependentList().add((Dependent) customer);
+                policyHolder.getObjDependentList().add((Dependent) customer);
             } else {
                 newInsuranceCard.setCardHolder(policyHolder);
             }
 
-            String pOwnerId;
-            PolicyOwner policyOwner;
-            do {
-                System.out.print("Enter the Policy Owner ID: ");
-                pOwnerId = scanner.nextLine();
-                policyOwner = policyOwnerList.findPOwnerById(pOwnerId);
-
-                if (policyOwner == null) {
-                    System.out.println("Policy Owner not found. Please enter a valid ID.");
-                }
-            } while (policyOwner == null);
+            PolicyOwner policyOwner = selectPolicyOwner(policyOwnerList, scanner);
             newInsuranceCard.setPolicyOwner(policyOwner);
             policyOwner.getObjPolicyHolderList().getCustomers().add(policyHolder);
 
             success = true;
             System.out.println("Insurance card added successfully.");
         } while (!success);
+        return null;
+    }
+
+    private boolean isCardNumberExists(String cardNumber) {
+        for (InsuranceCard card : insuranceCards) {
+            if (card.getCardNumber().equalsIgnoreCase(cardNumber)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private PolicyHolder selectPolicyHolder(CustomerList customerList, Scanner scanner) {
+        PolicyHolder policyHolder = null;
+        do {
+            System.out.print("Enter the Card Holder ID: ");
+            String cardHolderId = scanner.nextLine();
+            Customer cardHolder = customerList.findCustomerById(cardHolderId);
+
+            if (!(cardHolder instanceof PolicyHolder)) {
+                System.out.println("Invalid ID. The customer is not a Policy Holder. Please enter a valid Policy Holder ID.");
+            } else {
+                policyHolder = (PolicyHolder) cardHolder;
+            }
+        } while (policyHolder == null);
+        return policyHolder;
+    }
+
+    private PolicyOwner selectPolicyOwner(PolicyOwnerList policyOwnerList, Scanner scanner) {
+        PolicyOwner policyOwner = null;
+        do {
+            System.out.print("Enter the Policy Owner ID: ");
+            String policyOwnerId = scanner.nextLine();
+            policyOwner = policyOwnerList.findPOwnerById(policyOwnerId);
+            if (policyOwner == null) {
+                System.out.println("Policy Owner not found. Please enter a valid ID.");
+            }
+        } while (policyOwner == null);
+        return policyOwner;
     }
     @Override
     public void readFromFile() {
@@ -178,10 +188,18 @@ public class InsuranceCardList implements ReadAndWriteFile {
         }
     }
 
-    public boolean deleteInsuranceCardByNumber(String cardNum){
+    public boolean deleteInsuranceCardByNumber(String cardNum) {
         for (InsuranceCard insuranceCard : this.insuranceCards) {
             if (insuranceCard.getCardNumber().equals(cardNum)) {
                 insuranceCards.remove(insuranceCard);
+                Customer customer = insuranceCard.getCustomer();
+                if (customer instanceof Dependent) {
+                    PolicyHolder policyHolder = insuranceCard.getCardHolder();
+                    if (policyHolder != null) {
+                        policyHolder.getObjDependentList().remove((Dependent) customer);
+                    }
+                }
+                customerList.getCustomers().remove(customer);
                 return true;
             }
         }
@@ -228,11 +246,11 @@ public class InsuranceCardList implements ReadAndWriteFile {
 
     public void printMenuInsuranceCard() {
         System.out.println("====================INSURANCE CARD MENU====================");
-        System.out.println("1. ADD NEW INSURANCE CARD");
-        System.out.println("2. DELETE INSURANCE CARD BY NUMBER");
-        System.out.println("3. GET INSURANCE CARD BY CARD NUMBER");
-        System.out.println("4. GET ALL INSURANCE CARD");
-        System.out.println("5. UPDATE INSURANCE CARD BY CARD NUMBER");
+        System.out.println("1. DELETE INSURANCE CARD BY NUMBER");
+        System.out.println("2. GET INSURANCE CARD BY CARD NUMBER");
+        System.out.println("3. GET ALL INSURANCE CARD");
+        System.out.println("4. UPDATE INSURANCE CARD BY CARD NUMBER");
+        System.out.println("5. ADD NEW INSURANCE CARD");
         System.out.println("0. EXIT INSURANCE CARD MENU");
     }
 
@@ -247,8 +265,7 @@ public class InsuranceCardList implements ReadAndWriteFile {
             scanner.nextLine();
 
             switch (choice) {
-                case 1 -> addNewInsuranceCard();
-                case 2 -> {
+                case 1 -> {
                     System.out.print("Enter Card Number to delete: ");
                     String deleteCardNum = scanner.nextLine();
                     if (deleteInsuranceCardByNumber(deleteCardNum))
@@ -256,7 +273,7 @@ public class InsuranceCardList implements ReadAndWriteFile {
                     else
                         System.out.println("Insurance Card not found.");
                 }
-                case 3 -> {
+                case 2 -> {
                     System.out.print("Enter Card Number to search: ");
                     String searchCardNum = scanner.nextLine();
                     InsuranceCard foundCard = findInsuranceCardByNumber(searchCardNum);
@@ -265,8 +282,8 @@ public class InsuranceCardList implements ReadAndWriteFile {
                     else
                         System.out.println("Insurance Card not found.");
                 }
-                case 4 -> getAllInsuranceCards();
-                case 5 -> {
+                case 3 -> getAllInsuranceCards();
+                case 4 -> {
                     System.out.print("Enter Card Number to update: ");
                     String updateCardNum = scanner.nextLine();
                     if (updateInsuranceCardByNumber(updateCardNum))
@@ -274,6 +291,7 @@ public class InsuranceCardList implements ReadAndWriteFile {
                     else
                         System.out.println("Insurance Card not found.");
                 }
+                case 5-> addNewInsuranceCard();
                 case 0 -> exit = true;
                 default -> System.out.println("Invalid choice. Please enter a valid option.");
             }
