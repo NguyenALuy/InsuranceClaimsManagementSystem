@@ -8,6 +8,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
 
 public class InsuranceCardList implements ReadAndWriteFile {
@@ -222,9 +224,21 @@ public class InsuranceCardList implements ReadAndWriteFile {
 
 
     public void getAllInsuranceCards() {
+        sortInsuranceCardByNumber();
         for (InsuranceCard insuranceCard : this.insuranceCards) {
             System.out.println(insuranceCard.toString());
         }
+    }
+
+    public void sortInsuranceCardByNumber() {
+        Collections.sort(insuranceCards, new Comparator<InsuranceCard>() {
+            @Override
+            public int compare(InsuranceCard card1, InsuranceCard card2) {
+                String num1 = card1.getCardNumber().replace("-", "");
+                String num2 = card2.getCardNumber().replace("-", "");
+                return num1.compareTo(num2);
+            }
+        });
     }
 
     @Override
@@ -246,11 +260,11 @@ public class InsuranceCardList implements ReadAndWriteFile {
 
     public void printMenuInsuranceCard() {
         System.out.println("====================INSURANCE CARD MENU====================");
-        System.out.println("1. DELETE INSURANCE CARD BY NUMBER");
+        System.out.println("1. ADD NEW INSURANCE CARD");
         System.out.println("2. GET INSURANCE CARD BY CARD NUMBER");
         System.out.println("3. GET ALL INSURANCE CARD");
         System.out.println("4. UPDATE INSURANCE CARD BY CARD NUMBER");
-        System.out.println("5. ADD NEW INSURANCE CARD");
+        System.out.println("5. DELETE INSURANCE CARD BY CARD NUMBER");
         System.out.println("0. EXIT INSURANCE CARD MENU");
     }
 
@@ -266,12 +280,7 @@ public class InsuranceCardList implements ReadAndWriteFile {
 
             switch (choice) {
                 case 1 -> {
-                    System.out.print("Enter Card Number to delete: ");
-                    String deleteCardNum = scanner.nextLine();
-                    if (deleteInsuranceCardByNumber(deleteCardNum))
-                        System.out.println("Insurance Card deleted successfully.");
-                    else
-                        System.out.println("Insurance Card not found.");
+                    addNewInsuranceCard();
                 }
                 case 2 -> {
                     System.out.print("Enter Card Number to search: ");
@@ -291,7 +300,14 @@ public class InsuranceCardList implements ReadAndWriteFile {
                     else
                         System.out.println("Insurance Card not found.");
                 }
-                case 5-> addNewInsuranceCard();
+                case 5-> {
+                    System.out.print("Enter Card Number to delete: ");
+                    String deleteCardNum = scanner.nextLine();
+                    if (deleteInsuranceCardByNumber(deleteCardNum))
+                        System.out.println("Insurance Card deleted successfully.");
+                    else
+                        System.out.println("Insurance Card not found.");
+                }
                 case 0 -> exit = true;
                 default -> System.out.println("Invalid choice. Please enter a valid option.");
             }

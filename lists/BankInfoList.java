@@ -5,9 +5,7 @@ import model.BankInfo;
 
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Scanner;
+import java.util.*;
 
 public class BankInfoList implements ReadAndWriteFile {
     private ArrayList<BankInfo> bankInfos;
@@ -75,9 +73,23 @@ public class BankInfoList implements ReadAndWriteFile {
     }
 
     public void getAllBanks() {
+        sortBankInfoByBankNumber();
         for (BankInfo bankInfo : this.bankInfos) {
             System.out.println(bankInfo.toString());
         }
+    }
+
+    public void sortBankInfoByBankNumber() {
+        Collections.sort(bankInfos, new Comparator<BankInfo>() {
+            @Override
+            public int compare(BankInfo b1, BankInfo b2) {
+                String bankNumber1 = b1.getBankNumber().replaceAll("-", "");
+                String bankNumber2 = b2.getBankNumber().replaceAll("-", "");
+                long num1 = Long.parseLong(bankNumber1);
+                long num2 = Long.parseLong(bankNumber2);
+                return Long.compare(num1, num2);
+            }
+        });
     }
 
     public void addBankToList(BankInfo bankInfo) {

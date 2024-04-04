@@ -6,9 +6,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Scanner;
+import java.util.*;
 
 public class DocumentList implements ReadAndWriteFile {
     private ArrayList<Document> documents;
@@ -105,9 +103,21 @@ public class DocumentList implements ReadAndWriteFile {
     }
 
     public void getAllDocuments() {
+        sortDocumentById();
         for (Document document : this.documents) {
             System.out.println(document.toString());
         }
+    }
+
+    public void sortDocumentById() {
+        Collections.sort(documents, new Comparator<Document>() {
+            @Override
+            public int compare(Document d1, Document d2) {
+                int num1 = Integer.parseInt(d1.getDocumentId().substring(1));
+                int num2 = Integer.parseInt(d2.getDocumentId().substring(1));
+                return Integer.compare(num1, num2);
+            }
+        });
     }
 
     @Override

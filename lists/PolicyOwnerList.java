@@ -7,9 +7,7 @@ import model.PolicyOwner;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Scanner;
+import java.util.*;
 
 public class PolicyOwnerList implements ReadAndWriteFile {
     private ArrayList<PolicyOwner> policyOwners;
@@ -77,9 +75,21 @@ public class PolicyOwnerList implements ReadAndWriteFile {
     }
 
     public void getAllPOwners() {
+        sortPolicyOwnerById();
         for(PolicyOwner policyOwner : this.policyOwners){
             System.out.println(policyOwner.toString());
         }
+    }
+
+    public void sortPolicyOwnerById() {
+        Collections.sort(policyOwners, new Comparator<PolicyOwner>() {
+            @Override
+            public int compare(PolicyOwner p1, PolicyOwner p2) {
+                String id1 = p1.getPolicyOwnerId().replace("P", "").replace("-", "");
+                String id2 = p2.getPolicyOwnerId().replace("P", "").replace("-", "");
+                return id1.compareTo(id2);
+            }
+        });
     }
 
     @Override

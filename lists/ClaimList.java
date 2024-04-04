@@ -5,10 +5,7 @@ import interfaces.ReadAndWriteFile;
 import model.*;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Scanner;
+import java.util.*;
 
 public class ClaimList implements ClaimProcessManager, ReadAndWriteFile {
     private ArrayList<Claim> claims;
@@ -216,6 +213,7 @@ public class ClaimList implements ClaimProcessManager, ReadAndWriteFile {
 
     @Override
     public void getAllClaims() {
+        sortClaimById();
         for (Claim claim : this.claims) {
             System.out.println("Claim: " + claim.toString());
             for (Document document : documentList.getDocuments()) {
@@ -224,6 +222,19 @@ public class ClaimList implements ClaimProcessManager, ReadAndWriteFile {
                 }
             }
         }
+    }
+
+    public void sortClaimById() {
+        Collections.sort(claims, new Comparator<Claim>() {
+            @Override
+            public int compare(Claim claim1, Claim claim2) {
+                String id1 = claim1.getClaimId().substring(1);
+                String id2 = claim2.getClaimId().substring(1);
+                long num1 = Long.parseLong(id1);
+                long num2 = Long.parseLong(id2);
+                return Long.compare(num1, num2);
+            }
+        });
     }
 
     @Override

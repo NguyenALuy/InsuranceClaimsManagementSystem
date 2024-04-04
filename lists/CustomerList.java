@@ -5,6 +5,8 @@ import model.*;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
 
 public class CustomerList implements ReadAndWriteFile {
@@ -87,15 +89,15 @@ public class CustomerList implements ReadAndWriteFile {
         this.customers.add(customer);
     }
 
-    public boolean deleteCustomerById(String customerId) {
-        for (Customer customer : this.customers) {
-            if (customer.getId().equalsIgnoreCase(customerId)) {
-                customers.remove(customer);
-                return true;
-            }
-        }
-        return false;
-    }
+//    public boolean deleteCustomerById(String customerId) {
+//        for (Customer customer : this.customers) {
+//            if (customer.getId().equalsIgnoreCase(customerId)) {
+//                customers.remove(customer);
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     public boolean updateCustomerById(String customerId) {
         Scanner scan = new Scanner(System.in);
@@ -112,9 +114,21 @@ public class CustomerList implements ReadAndWriteFile {
     }
 
     public void getAllCustomers() {
+        sortCustomerById();
         for (Customer customer : this.customers) {
             System.out.println(customer.toString());
         }
+    }
+
+    public void sortCustomerById() {
+        Collections.sort(customers, new Comparator<Customer>() {
+            @Override
+            public int compare(Customer c1, Customer c2) {
+                int id1 = Integer.parseInt(c1.getId().substring(1));
+                int id2 = Integer.parseInt(c2.getId().substring(1));
+                return Integer.compare(id1, id2);
+            }
+        });
     }
 
     @Override
