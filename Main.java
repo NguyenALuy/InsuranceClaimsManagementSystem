@@ -14,7 +14,7 @@ public class Main {
         System.out.println(YELLOW_COLOR + "==========INSURANCE MANAGEMENT SYSTEM MENU==========" + RESET_COLOR);
         System.out.println(YELLOW_COLOR + "1. CUSTOMER MENU" + RESET_COLOR);
         System.out.println(YELLOW_COLOR + "2. POLICY OWNER MENU" + RESET_COLOR);
-        System.out.println(YELLOW_COLOR + "3. I6NSURANCE CARD MENU" + RESET_COLOR);
+        System.out.println(YELLOW_COLOR + "3. INSURANCE CARD MENU" + RESET_COLOR);
         System.out.println(YELLOW_COLOR + "4. BANK INFORMATION MENU" + RESET_COLOR);
         System.out.println(YELLOW_COLOR + "5. CLAIM MENU" + RESET_COLOR);
         System.out.println(YELLOW_COLOR + "6. DOCUMENT MENU" + RESET_COLOR);

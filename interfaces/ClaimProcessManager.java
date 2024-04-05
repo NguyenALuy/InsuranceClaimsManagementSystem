@@ -1,8 +1,8 @@
+/**
+ * @author <Nguyen A Luy - S3891919>
+ */
 package interfaces;
-
 import model.Claim;
-
-import java.util.ArrayList;
 
 public interface ClaimProcessManager {
     Claim addNewClaim();

@@ -1,8 +1,9 @@
+/**
+ * @author <Nguyen A Luy - S3891919>
+ */
 package model;
 
 import lists.CustomerList;
-
-import java.util.ArrayList;
 
 public class PolicyOwner{
     private String policyOwnerId;

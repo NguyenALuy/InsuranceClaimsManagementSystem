@@ -1,9 +1,7 @@
+/**
+ * @author <Nguyen A Luy - S3891919>
+ */
 package model;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Scanner;
 
 public class BankInfo {
     private String bankName;

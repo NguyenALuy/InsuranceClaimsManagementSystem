@@ -1,9 +1,7 @@
+/**
+ * @author <Nguyen A Luy - S3891919>
+ */
 package model;
-
-import javax.print.Doc;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Scanner;
 
 public class Document {
     private String documentId;

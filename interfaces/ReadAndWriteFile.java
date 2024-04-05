@@ -1,5 +1,7 @@
+/**
+ * @author <Nguyen A Luy - S3891919>
+ */
 package interfaces;
-
 import java.io.FileNotFoundException;
 
 public interface ReadAndWriteFile {

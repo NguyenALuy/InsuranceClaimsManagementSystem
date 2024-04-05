@@ -1,8 +1,10 @@
+/**
+ * @author <Nguyen A Luy - S3891919>
+ */
 package lists;
 
 import interfaces.ReadAndWriteFile;
 import model.Customer;
-import model.Document;
 import model.PolicyHolder;
 import model.PolicyOwner;
 

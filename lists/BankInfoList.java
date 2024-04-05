@@ -1,9 +1,10 @@
+/**
+ * @author <Nguyen A Luy - S3891919>
+ */
 package lists;
 
 import interfaces.ReadAndWriteFile;
 import model.BankInfo;
-
-
 import java.io.*;
 import java.util.*;
 

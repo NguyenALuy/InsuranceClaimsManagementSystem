@@ -1,8 +1,9 @@
+/**
+ * @author <Nguyen A Luy - S3891919>
+ */
 package model;
 
 import lists.ClaimList;
-
-import java.util.ArrayList;
 
 public abstract class Customer {
     private String id;

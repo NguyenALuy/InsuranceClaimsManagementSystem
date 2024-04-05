@@ -1,3 +1,6 @@
+/**
+ * @author <Nguyen A Luy - S3891919>
+ */
 package model;
 
 import java.text.SimpleDateFormat;

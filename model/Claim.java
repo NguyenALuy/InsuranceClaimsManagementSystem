@@ -1,6 +1,8 @@
+/**
+ * @author <Nguyen A Luy - S3891919>
+ */
 package model;
 
-import lists.ClaimList;
 import lists.DocumentList;
 
 import java.text.SimpleDateFormat;

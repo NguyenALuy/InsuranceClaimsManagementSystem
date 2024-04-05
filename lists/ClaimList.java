@@ -1,9 +1,11 @@
+/**
+ * @author <Nguyen A Luy - S3891919>
+ */
 package lists;
 
 import interfaces.ClaimProcessManager;
 import interfaces.ReadAndWriteFile;
 import model.*;
-
 import java.io.*;
 import java.util.*;
 
