@@ -1,7 +1,9 @@
 package lists;
 
 import interfaces.ReadAndWriteFile;
+import model.Customer;
 import model.Document;
+import model.PolicyHolder;
 import model.PolicyOwner;
 
 import java.io.BufferedReader;
@@ -165,7 +167,12 @@ public class PolicyOwnerList implements ReadAndWriteFile {
                     System.out.print("Enter Policy Owner ID to search for the Holder List: ");
                     String pOwnerIdToSearch = scanner.nextLine();
                     PolicyOwner foundPolicyOwner = findPOwnerById(pOwnerIdToSearch);
-                    System.out.println(foundPolicyOwner.getPolicyOwnerName() + foundPolicyOwner.getObjPolicyHolderList().getCustomers());
+                    System.out.println(foundPolicyOwner.getPolicyOwnerName());
+                    for(Customer customer :  foundPolicyOwner.getObjPolicyHolderList().getCustomers()){
+                        if(customer instanceof PolicyHolder){
+                            System.out.println(customer);
+                        }
+                    }
                 }
                 case 0 -> System.out.println("Exiting policy owner menu.");
                 default -> System.out.println("Invalid choice. Please enter a number between 0 and 5.");
