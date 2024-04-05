@@ -13,9 +13,9 @@ public class Main {
     public static void printInsuranceManagementSystemMenu(){
         System.out.println(YELLOW_COLOR + "==========INSURANCE MANAGEMENT SYSTEM MENU==========" + RESET_COLOR);
         System.out.println(YELLOW_COLOR + "1. CUSTOMER MENU" + RESET_COLOR);
-        System.out.println(YELLOW_COLOR + "2. BANK INFORMATION MENU" + RESET_COLOR);
-        System.out.println(YELLOW_COLOR + "3. POLICY OWNER MENU" + RESET_COLOR);
-        System.out.println(YELLOW_COLOR + "4. INSURANCE CARD MENU" + RESET_COLOR);
+        System.out.println(YELLOW_COLOR + "2. POLICY OWNER MENU" + RESET_COLOR);
+        System.out.println(YELLOW_COLOR + "3. I6NSURANCE CARD MENU" + RESET_COLOR);
+        System.out.println(YELLOW_COLOR + "4. BANK INFORMATION MENU" + RESET_COLOR);
         System.out.println(YELLOW_COLOR + "5. CLAIM MENU" + RESET_COLOR);
         System.out.println(YELLOW_COLOR + "6. DOCUMENT MENU" + RESET_COLOR);
         System.out.println(YELLOW_COLOR + "0. EXIT THE SYSTEM" + RESET_COLOR);
@@ -44,9 +44,9 @@ public class Main {
 
             switch (choice) {
                 case 1 -> customerList.doMenuCustomer();
-                case 2 -> bankInfoList.doMenuBank();
-                case 3 -> policyOwnerList.doMenuPolicyOwner();
-                case 4 -> insuranceCardList.doMenuInsuranceCard();
+                case 2 -> policyOwnerList.doMenuPolicyOwner();
+                case 3 -> insuranceCardList.doMenuInsuranceCard();
+                case 4 -> bankInfoList.doMenuBank();
                 case 5 -> claimList.doMenuClaim();
                 case 6 -> documentList.doMenuDocument();
                 case 0 -> {

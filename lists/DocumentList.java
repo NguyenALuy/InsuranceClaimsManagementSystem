@@ -50,7 +50,6 @@ public class DocumentList implements ReadAndWriteFile {
         String documentName = scanner.nextLine();
 
         Document document = new Document(documentId, claimId, cardNumber, documentName);
-        documents.add(document);
         System.out.println("Document added successfully.");
         return document;
     }

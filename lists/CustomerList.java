@@ -43,7 +43,7 @@ public class CustomerList implements ReadAndWriteFile {
 
         do {
             invalidChoice = false;
-
+            System.out.println("__Create New Customer__");
             System.out.println("Enter Customer ID:");
             customerId = scanner.nextLine();
 
