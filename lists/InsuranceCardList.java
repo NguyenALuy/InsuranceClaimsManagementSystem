@@ -171,8 +171,6 @@ public class InsuranceCardList implements ReadAndWriteFile {
                         policyOwner.getObjPolicyHolderList().getCustomers().add(customer);
                         insuranceCards.add(insuranceCard);
                         validLines.add(line);
-                    } else {
-                        System.out.println("Invalid customer, card holder, or policy owner: " + customerId + ", " + cardHolderId + ", " + policyOwnerId);
                     }
                 } else {
                     System.out.println("Invalid data format: " + line);
@@ -187,7 +185,6 @@ public class InsuranceCardList implements ReadAndWriteFile {
                 writer.write(validLine);
                 writer.write("\n");
             }
-            System.out.println("Valid insurance card information has been written to the file successfully.");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -256,7 +253,6 @@ public class InsuranceCardList implements ReadAndWriteFile {
                 writer.write(line);
                 writer.write("\n");
             }
-            System.out.println("Insurance card information has been written to the file successfully.");
         } catch (IOException e) {
             e.printStackTrace();
         }    }

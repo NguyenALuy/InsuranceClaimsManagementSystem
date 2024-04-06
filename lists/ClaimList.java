@@ -101,6 +101,7 @@ public class ClaimList implements ClaimProcessManager, ReadAndWriteFile {
 
             claim = new Claim(claimId, claimDate, cardNumber, examDate, status, claimAmount);
             InsuranceCard insuranceCard = insuranceCardList.findInsuranceCardByNumber(cardNumber);
+            insuranceCard.getCustomer().getObjClaimList().getClaims().add(claim);
             claim.setInsuredPerson(insuranceCard.getCustomer());
             claim.setReceiverBankingInfo(bankinfo);
             for(Document document : documentList.getDocuments()){
@@ -199,15 +200,18 @@ public class ClaimList implements ClaimProcessManager, ReadAndWriteFile {
     @Override
     public Claim getOneClaim(String claimId) {
         for (Claim claim : this.claims) {
-            if (claim.getClaimId().equalsIgnoreCase(claimId)) {
-                DocumentList claimDocuments = new DocumentList();
-                for (Document document : documentList.getDocuments()) {
-                    if (document.getClaimId().equalsIgnoreCase(claimId)) {
-                        claimDocuments.addDocumentToList(document);
+            InsuranceCard insuranceCard = insuranceCardList.findInsuranceCardByNumber(claim.getCardNumber());
+            if (insuranceCard != null) {
+                if (claim.getClaimId().equalsIgnoreCase(claimId)) {
+                    DocumentList claimDocuments = new DocumentList();
+                    for (Document document : documentList.getDocuments()) {
+                        if (document.getClaimId().equalsIgnoreCase(claimId)) {
+                            claimDocuments.addDocumentToList(document);
+                        }
                     }
+                    claim.setObjDocumentList(claimDocuments);
+                    return claim;
                 }
-                claim.setObjDocumentList(claimDocuments);
-                return claim;
             }
         }
         return null;
@@ -216,13 +220,28 @@ public class ClaimList implements ClaimProcessManager, ReadAndWriteFile {
     @Override
     public void getAllClaims() {
         sortClaimById();
+        ArrayList<InsuranceCard> validInsuranceCards = new ArrayList<>();
         for (Claim claim : this.claims) {
-            System.out.println("Claim: " + claim.toString());
-            for (Document document : documentList.getDocuments()) {
-                if (document.getClaimId().equalsIgnoreCase(claim.getClaimId())) {
-                    System.out.println("Associated Document: " + document.toString());
+            InsuranceCard insuranceCard = insuranceCardList.findInsuranceCardByNumber(claim.getCardNumber());
+            if (insuranceCard != null && !validInsuranceCards.contains(insuranceCard)) {
+                validInsuranceCards.add(insuranceCard);
+            }
+        }
+
+        for (InsuranceCard insuranceCard : validInsuranceCards) {
+            System.out.println("Insurance Card Number: " + insuranceCard.getCardNumber());
+            System.out.println("Customer Name: " + insuranceCard.getCustomer().getFullName());
+            System.out.println("Claims:");
+
+            for (Claim claim : insuranceCard.getCustomer().getObjClaimList().getClaims()) {
+                System.out.println("Claim: " + claim.toString());
+                for (Document document : documentList.getDocuments()) {
+                    if (document.getClaimId().equalsIgnoreCase(claim.getClaimId())) {
+                        System.out.println("Associated Document: " + document.toString());
+                    }
                 }
             }
+            System.out.println("-----END OF CLAIM-----");
         }
     }
 
@@ -238,6 +257,25 @@ public class ClaimList implements ClaimProcessManager, ReadAndWriteFile {
             }
         });
     }
+
+    public ClaimList getClaimsOfCustomerByCustomerId(String id) {
+        ArrayList<Claim> customerClaims = new ArrayList<>();
+        Customer customer = customerList.findCustomerById(id);
+        if (customer != null) {
+            for (Claim claim : claims) {
+                if (claim.getInsuredPerson() != null && claim.getInsuredPerson().getId().equalsIgnoreCase(id)) {
+                    customerClaims.add(claim);
+                }
+            }
+        } else {
+            System.out.println("Customer with ID " + id + " not found.");
+        }
+        ClaimList customerClaimList = new ClaimList();
+        customerClaimList.setClaims(customerClaims);
+
+        return customerClaimList;
+    }
+
 
     @Override
     public void readFromFile() {
@@ -274,8 +312,6 @@ public class ClaimList implements ClaimProcessManager, ReadAndWriteFile {
                         claim.setReceiverBankingInfo(bankInfo);
                         claims.add(claim);
                         validLines.add(line);
-                    } else {
-                        System.out.println("Insurance card not found for claim ID: " + claimId + ". Skipping this entry.");
                     }
                 } else {
                     System.out.println("Invalid data format: " + line);
@@ -290,7 +326,6 @@ public class ClaimList implements ClaimProcessManager, ReadAndWriteFile {
                 writer.write(validLine);
                 writer.write("\n");
             }
-            System.out.println("Valid claim information has been written to the file successfully.");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -326,6 +361,7 @@ public class ClaimList implements ClaimProcessManager, ReadAndWriteFile {
         System.out.println("3. GET CLAIM BY ID");
         System.out.println("4. GET ALL CLAIMS");
         System.out.println("5. UPDATE CLAIM BY CARD NUMBER");
+        System.out.println("6. GET CLAIMS OF CUSTOMER BY ID");
         System.out.println("0. EXIT CLAIM MENU");
     }
 
@@ -375,6 +411,26 @@ public class ClaimList implements ClaimProcessManager, ReadAndWriteFile {
                         System.out.println("Claim updated successfully.");
                     } else {
                         System.out.println("Claim with ID " + claimIdToUpdate + " not found.");
+                    }
+                }
+                case 6 -> {
+                    boolean validCustomerId = false;
+                    ClaimList objClaimsOfCustomer = null;
+
+                    do {
+                        System.out.println("Enter Customer Id to search: ");
+                        String customerId = scanner.nextLine();
+                        objClaimsOfCustomer = getClaimsOfCustomerByCustomerId(customerId);
+
+                        if (objClaimsOfCustomer.getClaims().isEmpty()) {
+                            System.out.println("No claims found for the provided customer ID. Please enter a valid Customer ID.");
+                        } else {
+                            validCustomerId = true;
+                        }
+                    } while (!validCustomerId);
+
+                    for (Claim claim : objClaimsOfCustomer.getClaims()) {
+                        System.out.println(claim);
                     }
                 }
                 case 0 -> exit = true;
